@@ -29,3 +29,6 @@ Searching /etc/pki/tls .....
         /etc/httpd/conf.d/web_api.conf
 ....done
 ```
+## Platform
+
+Tested on GNU bash, version 4.2.46(2)-release (x86_64-redhat-linux-gnu)
