@@ -15,7 +15,6 @@ crti.sh <hostname> [port] [crt path] [cfg path]
 ```
 ## Examples
 
-Retrieve certificate using default ![#1589F0]SSL port and config path
 Retrieve certificate using default SSL port and config path
 ```
 $ ./crti.sh myhost.mydomain.net
