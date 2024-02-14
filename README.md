@@ -15,10 +15,10 @@ crti.sh <hostname> [port] [crt path] [cfg path]
 ```
 ## Examples
 
-Retrieve certificate using default SSL port and config path
+Retrieve certificate using `#0969DA`default SSL port and config path
 ```
 $ ./crti.sh myhost.mydomain.net
-Certificate Info : `#0969DA`myhost.mydomain.net port 443
+Certificate Info : myhost.mydomain.net port 443
    Serial number : 170CE7AA0953DC740983F70273B80A3C
    Valid until   : Jul 17 23:59:59 2024 GMT
    Certificate CN: C = FI, ST = Uusimaa, O = MyDomain Inc, CN = myhost.mydomain.net
