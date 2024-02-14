@@ -6,3 +6,16 @@ Certificate Information script queries host on remote ssh, assumes login with ss
 ```
 crti.sh <hostname> [port] [crt path] [cfg path]
 ```
+## Parameters
+```
+1:  Hostname (required)
+2:  OpenSSL port (default: 443)
+3:  Certificate search path (default openssl)
+4:  Configuration search path (default: /etc)
+```
+## Examples
+
+Retrieve certificate using default SSL port and config path
+```
+$ ./crti.sh myhost.mydomain.net
+```
