@@ -4,7 +4,7 @@ Certificate Information script queries certificate on host using OpenSSL over re
 
 ## Usage
 ```
-crti.sh <hostname> [port] [crt path] [cfg path]
+$ ./crti.sh <hostname> [port] [crt path] [cfg path]
 ```
 ## Parameters
 ```
