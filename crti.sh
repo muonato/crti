@@ -1,7 +1,7 @@
 #!/bin/bash
 # muonato/crti @ GitHub 14-FEB-2024
 #
-# Certificate Information script queries host on remote
+# Certificate Information query using OpenSSL over remote
 # ssh, assumes login with ssh-agent (or without passwd).
 # Retrieves SSL certificate common name (CN), serial and
 # expiry date. Locates certificate file by verifying the
@@ -54,16 +54,20 @@ PORT=${2:-"443"}
 LOCN=$3
 CONF=${4:-"/etc"}
 
+# parse certificate serial number, expiry date, subject and alternative subject names
 CERT=$(sshc "openssl s_client -connect localhost:$PORT 2>/dev/null|openssl x509 -text -noout -serial -enddate -subject")
 SNUM=$(echo $CERT|grep -oP "(?<=serial=).*")
 DATE=$(echo $CERT|grep -oP "(?<=notAfter=).*")
 SUBJ=$(echo $CERT|grep -oP "(?<=subject=).*")
+CSAN=$(echo $CERT|grep "DNS")
 
 echo -e "Certificate Info : $HOST port $PORT"
 echo -e "   Serial number : $HI$SNUM$LO"
 echo -e "   Valid until   : $HI$DATE$LO"
-echo -e "   Certificate CN: $HI$SUBJ$LO\n"
+echo -e "   Certificate CN: $HI$SUBJ$LO"
+echo -e "   Alternative CN: $HI$CSAN$LO\n"
 
+# certificate default path
 if [[ -z $LOCN ]]; then
     SSLV=$(sshc "openssl version -d")
     LOCN=$(echo $SSLV|grep -oP '(?<=").*(?=")')
@@ -76,12 +80,14 @@ if [[ -z $CRT_FIND ]]; then
     echo -e "\nFound nothing."
 fi
 
+# try serial number match
 while read CRT_FILE; do
     CRT_PATH=$(echo $CRT_FILE|grep -oP "^[^:1:]+")
     if [[ -n $CRT_PATH ]]; then
         MATCH=$(sshc "sudo openssl x509 -noout -serial -in $CRT_PATH|grep -o '$SNUM'")
         if [[ -n $MATCH ]]; then
             echo -e "\n$HI$CRT_PATH$LO"
+            # search for certificate references
             CFG_FIND=$(sshc "sudo grep -rni '$CRT_PATH' $CONF")
             while read LINE; do
                 echo -e "\t$LINE"|grep -oP "^[^:]+"
