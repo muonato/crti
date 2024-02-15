@@ -73,7 +73,7 @@ if [[ -z $LOCN ]]; then
     LOCN=$(echo $SSLV|grep -oP '(?<=").*(?=")')
 fi
 
-echo -n "Searching $LOCN "
+echo -n "Searching config references "
 
 CRT_FIND=$(sshc "sudo grep -rni 'BEGIN CERTIFICATE' $LOCN")
 if [[ -z $CRT_FIND ]]; then
