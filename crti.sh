@@ -55,7 +55,8 @@ LOCN=$3
 CONF=${4:-"/etc"}
 
 # parse certificate serial number, expiry date, subject and alternative subject names
-CERT=$(sshc "openssl s_client -connect localhost:$PORT 2>/dev/null|openssl x509 -text -noout -serial -enddate -subject")
+CERT=$(sshc "openssl s_client -connect localhost:$PORT 2>/dev/null \
+    |openssl x509 -text -noout -serial -enddate -subject")
 SNUM=$(echo $CERT|grep -oP "(?<=serial=).*")
 DATE=$(echo $CERT|grep -oP "(?<=notAfter=).*")
 SUBJ=$(echo $CERT|grep -oP "(?<=subject=).*")
