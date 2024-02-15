@@ -1,6 +1,6 @@
 # Certificate Information
 
-Certificate Information script queries certificate on host using OpenSSL over remote ssh, assumes login with ssh-agent (or without passwd).
+Certificate Information query using OpenSSL over remote ssh, assumes login with ssh-agent (or without passwd).
 
 Retrieves SSL certificate common name (CN), serial and expiry date.
 Locates certificate file by verifying the serial number and reports config files with references.
