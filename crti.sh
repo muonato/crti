@@ -24,7 +24,7 @@
 #           $ ./crti.sh myhost.mydomain.net 55602
 
 # Exit on error
-set -e
+# set -e
 
 # Usage help
 if [[ -z $1 ]]; then
@@ -77,9 +77,10 @@ fi
 echo "Requesting localhost URL "
 WWW_FIND=$(sshc "sudo curl -s -D- localhost")
 if [[ -n $WWW_FIND ]]; then
-    WWW_SERV=$(echo $WWW_FIND|grep -i server)
-    WWW_PAGE=$(echo $WWW_FIND|grep -i location)
-    echo -e "\t$WWW_SERV\n\t$WWW_PAGE\n"
+    WWW_SERV=$(echo $WWW_FIND|grep -i "server")
+    echo -e "\t$WWW_SERV"
+    WWW_PAGE=$(echo $WWW_FIND|grep -i "location")
+    echo -e "\t$WWW_PAGE\n"
 else
     echo -e "done.\n"
 fi
