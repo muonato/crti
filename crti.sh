@@ -96,10 +96,10 @@ while read CRT_FILE; do
     if [[ -n $CRT_PATH ]]; then
         MATCH=$(sshc "sudo openssl x509 -noout -serial -in $CRT_PATH 2>/dev/null|grep -o '$SNUM'")
         if [[ -n $MATCH ]]; then
-            echo -e "\n$HI$CRT_PATH$LO"
+            echo -e "\n\t$HI$CRT_PATH$LO"
             CFG_FIND=$(sshc "sudo grep -rni -m 1 '$CRT_PATH' $CONF")
             while read LINE; do
-                echo -e "\t$LINE"|grep -oP "^[^:]+"
+                echo -e "\t\t$LINE"|grep -oP "^[^:]+"
             done <<< $CFG_FIND
         fi
         echo -n "."
