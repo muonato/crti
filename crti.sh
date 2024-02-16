@@ -74,7 +74,7 @@ if [[ -z $LOCN ]]; then
     LOCN=$(echo $SSLV|grep -oP '(?<=").*(?=")')
 fi
 
-echo "Requesting localhost URL "
+echo "Requesting URL $HOST "
 WWW_FIND=$(sshc "sudo curl -s -D- localhost")
 if [[ -n $WWW_FIND ]]; then
     WWW_SERV=$(echo $WWW_FIND|grep -i "server")
@@ -85,25 +85,22 @@ else
     echo -e "done.\n"
 fi
 
-echo -n "Searching '$CONF' for configuration "
+echo -n "Locating certificate and configuration "
 CRT_FIND=$(sshc "sudo grep -rni -m 1 'BEGIN CERTIFICATE' $LOCN")
-if [[ -z $CRT_FIND ]]; then
-    echo -e "\ndone."
-fi
-
-while read CRT_FILE; do
-    CRT_PATH=$(echo $CRT_FILE|grep -oP "^[^:]+")
-    if [[ -n $CRT_PATH ]]; then
-        MATCH=$(sshc "sudo openssl x509 -noout -serial -in $CRT_PATH 2>/dev/null|grep -o '$SNUM'")
-        if [[ -n $MATCH ]]; then
-            echo -e "\n\t$HI$CRT_PATH$LO"
-            CFG_FIND=$(sshc "sudo grep -rni -m 1 '$CRT_PATH' $CONF")
-            while read LINE; do
-                echo -e "\t\t$LINE"|grep -oP "^[^:]+"
-            done <<< $CFG_FIND
+if [[ -n $CRT_FIND ]]; then
+    while read CRT_FILE; do
+        CRT_PATH=$(echo $CRT_FILE|grep -oP "^[^:]+")
+        if [[ -n $CRT_PATH ]]; then
+            MATCH=$(sshc "sudo openssl x509 -noout -serial -in $CRT_PATH 2>/dev/null|grep -o '$SNUM'")
+            if [[ -n $MATCH ]]; then
+                echo -e "\n\t$HI$CRT_PATH$LO"
+                CFG_FIND=$(sshc "sudo grep -rni -m 1 '$CRT_PATH' $CONF")
+                while read LINE; do
+                    echo -e "\t\t$LINE"|grep -oP "^[^:]+"
+                done <<< $CFG_FIND
+            fi
+            echo -n "."
         fi
-        echo -n "."
-    fi
-done <<< $CRT_FIND
-
+    done <<< $CRT_FIND
+fi
 echo -e "done.\n"
