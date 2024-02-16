@@ -1,8 +1,8 @@
 #!/bin/bash
-# muonato/crti @ GitHub 14-FEB-2024
+# muonato/crti @ GitHub 16-FEB-2024
 #
-# Certificate Information query using OpenSSL over remote
-# ssh, assumes login with ssh-agent (or without passwd).
+# Certificate Information query using OpenSSL connection,
+# assuming login with ssh-agent (or without password).
 # Retrieves SSL certificate common name (CN), serial and
 # expiry date. Locates certificate file by verifying the
 # serial number and reports config files with references.
