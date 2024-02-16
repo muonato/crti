@@ -62,44 +62,47 @@ DATE=$(echo $CERT|grep -oP "(?<=notAfter=).*")
 SUBJ=$(echo $CERT|grep -oP "(?<=subject=).*")
 CSAN=$(echo $CERT|grep "DNS")
 
-echo -e "Certificate Info : $HOST port $PORT"
-echo -e "   Serial number : $HI$SNUM$LO"
-echo -e "   Valid until   : $HI$DATE$LO"
-echo -e "   Certificate CN: $HI$SUBJ$LO"
-echo -e "   Alternative CN: $HI$CSAN$LO\n"
+echo -e "Certificate Information " \
+    "\n\tHostname/port : $HOST port $PORT" \
+    "\n\tSerial number : $HI$SNUM$LO" \
+    "\n\tValid until   : $HI$DATE$LO" \
+    "\n\tCertificate CN: $HI$SUBJ$LO" \
+    "\n\tAlternative CN: $HI$CSAN$LO\n"
 
-# certificate default path
 if [[ -z $LOCN ]]; then
     SSLV=$(sshc "openssl version -d")
     LOCN=$(echo $SSLV|grep -oP '(?<=").*(?=")')
 fi
 
-echo -n "Searching config references "
-
-CRT_FIND=$(sshc "sudo grep -rni 'BEGIN CERTIFICATE' $LOCN")
-if [[ -z $CRT_FIND ]]; then
-    echo -e "\nFound nothing."
+echo "Requesting localhost URL "
+WWW_FIND=$(sshc "sudo curl -s -D- localhost")
+if [[ -n $WWW_FIND ]]; then
+    WWW_SERV=$(echo $WWW_FIND|grep -i server)
+    WWW_PAGE=$(echo $WWW_FIND|grep -i location)
+    echo -e "\t$WWW_SERV\n\t$WWW_PAGE\n"
+else
+    echo -e "done.\n"
 fi
 
-# try serial number match
+echo -n "Searching '$CONF' for configuration "
+CRT_FIND=$(sshc "sudo grep -rni -m 1 'BEGIN CERTIFICATE' $LOCN")
+if [[ -z $CRT_FIND ]]; then
+    echo -e "\ndone."
+fi
+
 while read CRT_FILE; do
-    CRT_PATH=$(echo $CRT_FILE|grep -oP "^[^:1:]+")
+    CRT_PATH=$(echo $CRT_FILE|grep -oP "^[^:]+")
     if [[ -n $CRT_PATH ]]; then
-        MATCH=$(sshc "sudo openssl x509 -noout -serial -in $CRT_PATH|grep -o '$SNUM'")
+        MATCH=$(sshc "sudo openssl x509 -noout -serial -in $CRT_PATH 2>/dev/null|grep -o '$SNUM'")
         if [[ -n $MATCH ]]; then
             echo -e "\n$HI$CRT_PATH$LO"
-            # search for certificate references
-            CFG_FIND=$(sshc "sudo grep -rni '$CRT_PATH' $CONF")
+            CFG_FIND=$(sshc "sudo grep -rni -m 1 '$CRT_PATH' $CONF")
             while read LINE; do
                 echo -e "\t$LINE"|grep -oP "^[^:]+"
             done <<< $CFG_FIND
         fi
+        echo -n "."
     fi
-    echo -n "."
 done <<< $CRT_FIND
 
-echo -e "done\n"
-
-if [[ -z $CFG_FIND ]]; then
-    echo -e "Found no reference in $CONF\n"
-fi
+echo -e "done.\n"
