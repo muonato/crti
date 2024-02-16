@@ -55,7 +55,7 @@ LOCN=$3
 CONF=${4:-"/etc"}
 
 # parse certificate serial number, expiry date, subject and alternative subject names
-CERT=$(sshc "openssl s_client -connect localhost:$PORT 2>/dev/null \
+CERT=$(sshc "openssl s_client -connect $HOST:$PORT 2>/dev/null \
     |openssl x509 -text -noout -serial -enddate -subject")
 SNUM=$(echo $CERT|grep -oP "(?<=serial=).*")
 DATE=$(echo $CERT|grep -oP "(?<=notAfter=).*")
@@ -75,7 +75,7 @@ if [[ -z $LOCN ]]; then
 fi
 
 echo "Requesting URL $HOST "
-WWW_FIND=$(sshc "sudo curl -s -D- localhost")
+WWW_FIND=$(sshc "sudo curl -s -D- $HOST")
 if [[ -n $WWW_FIND ]]; then
     WWW_SERV=$(echo $WWW_FIND|grep -i "server")
     echo -e "\t$WWW_SERV"
