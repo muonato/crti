@@ -2,8 +2,8 @@
 
 Certificate Information query using OpenSSL over remote ssh, assumes login with ssh-agent (or without passwd).
 
-Retrieves SSL certificate common name (CN), serial and expiry date.
-Locates certificate file by verifying the serial number and reports config files with references.
+Retrieves SSL certificate common name (CN), serial and expiry date. Requests (curl) localhost URL and web server information.
+Locates certificate file by matching the serial number and finds config files with the certificate path reference.
 
 ## Usage
 ```
@@ -21,17 +21,21 @@ $ ./crti.sh <hostname> [port] [crt path] [cfg path]
 Retrieve certificate using default SSL port and config path
 ```
 $ ./crti.sh myhost.mydomain.net
-Certificate Info : myhost.mydomain.net port 443
-   Serial number : 170CE7AA0953DC740983F70273B80A3C
-   Valid until   : Jul 17 23:59:59 2024 GMT
-   Certificate CN: C = FI, ST = Uusimaa, O = MyDomain Inc, CN = myhost.mydomain.net
-   Alternative CN: DNS:myhost.mydomainx.net, DNS:web.mydomain.net
+Certificate Information
+        Hostname/port : myhost.mydomain.net port 443
+        Serial number : 170CE7AA0953DC740983F70273B80A3C
+        Valid until   : Jul 19 23:59:59 2024 GMT
+        Certificate CN:  C = FI, ST = Uusimaa, O = MyDomain Inc, CN = myhost.mydomain.net
+        Alternative CN:  DNS:myhost.mydomain.net, DNS:web.mydomain.net
 
-Searching config references .....
-/etc/pki/tls/certs/myhost_mydomain_net.cer
-        /etc/httpd/conf.d/mydomain.conf
-        /etc/httpd/conf.d/web_api.conf
-....done
+Requesting localhost URL
+        Server: Apache
+        Location: https://web.mydomain.net
+
+Searching '/etc' for configuration .......
+/etc/pki/tls/web_mydomain_net.cer
+        /etc/httpd/conf.d/ssl.conf
+..done.
 ```
 ## Platform
 
