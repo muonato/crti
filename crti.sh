@@ -1,5 +1,5 @@
 #!/bin/bash
-# muonato/crti @ GitHub 16-FEB-2024
+# muonato/crti @ GitHub 19-FEB-2024
 #
 # Certificate Information query using OpenSSL connection,
 # assuming login with ssh-agent (or without password).
@@ -40,7 +40,7 @@ fi
 
 function sshc() {
     CMND=$1
-    echo "" | echo $(ssh $HOST $CMND);
+    echo "" | echo $(ssh $HOST $CMND 2>/dev/null);
 }
 IFS=" "
 
